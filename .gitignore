@@ -1,62 +1,11 @@
 # Environment & Secrets
 .env
 .env.local
-.env.*.local
 
-# IDE & Editor
+# IDE
 .vscode/
 .idea/
 *.swp
-*.swo
-*~
-.DS_Store
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-.venv/
-*.egg-info/
-dist/
-build/
-
-# Docker
-.docker/
-*.log
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-litellm-db-data/
 
 # OS
 .DS_Store
-Thumbs.db
-
-# Sensitive paths & Legacy files
-config.yaml
-local_config.yaml
-config-simple.yaml
-gateway.py
-start_gateway.py
-test_gateway.py
-
-# Kubernetes (legacy, use Docker Compose instead)
-k8s-deployment.yaml
-K8S-DEPLOYMENT.md
-deploy-k8s.sh
-
-# Terraform/Deployment scripts
-*.tfstate
-*.tfstate.backup
-*.tfvars
-
-# Temporary files
-*.tmp
-*.temp
-/tmp/
