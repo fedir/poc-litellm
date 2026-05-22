@@ -31,13 +31,13 @@ Mistral Large model fully integrated and tested. Gateway running with persistent
 cd /var/home/fedir/Lab/ai-gateway
 
 # Create .env file from template
-cp .env.example .env
+make setup
 
 # Edit .env and add your credentials
 nano .env
 
 # Start the gateway
-podman compose up -d
+make start
 ```
 
 **Configure in .env:**
@@ -73,6 +73,15 @@ curl -X POST http://localhost:8000/model/new \
 ```
 
 ### Test the Model
+
+**Using Makefile (Recommended):**
+```bash
+make test-mistralapi
+```
+
+This runs `scripts/test-mistral.py` which tests the Mistral Large model integration with error handling.
+
+**Manual API Test:**
 ```python
 import urllib.request
 import json
@@ -218,38 +227,90 @@ model_list:
 
 ## Common Commands
 
-### Start Services
+All commands are available via **Makefile** for simplicity:
+
 ```bash
+# Start services
+make start
+
+# Stop services
+make stop
+
+# Restart services
+make restart
+
+# View logs (all services)
+make logs
+
+# View gateway logs only
+make logs-gateway
+
+# View database logs only
+make logs-db
+
+# Check container status
+make status
+
+# Health check
+make health
+
+# List registered models
+make models
+
+# Test Mistral API
+make test-mistralapi
+
+# Clean up containers and volumes
+make clean
+```
+
+**Or use raw Podman commands:**
+```bash
+# Start
 podman compose up -d
-```
 
-### Stop Services
-```bash
+# Stop
 podman compose down
-```
 
-### View Logs
-```bash
+# View logs
 podman logs litellm-gateway -f
 podman logs litellm-db -f
+
+# Access Database CLI
+podman exec -it litellm-db psql -U litellm -d litellm
 ```
 
-### Restart
-```bash
-podman compose restart
-```
+## Makefile Reference
 
-### Reset Everything
-```bash
-podman compose down -v
-podman compose up -d
-```
+The project includes a **Makefile** for simplified deployment and testing:
 
-### Access Database CLI
-```bash
-# Use credentials from .env file
-podman exec -it litellm-db psql -U ${POSTGRES_USER} -d ${POSTGRES_DB}
-```
+### Deployment Commands
+- `make start` - Start gateway and database containers
+- `make stop` - Stop all services
+- `make restart` - Restart all services
+- `make clean` - Remove containers and volumes (full reset)
+
+### Monitoring Commands
+- `make status` - Show container status
+- `make logs` - Follow all service logs
+- `make logs-gateway` - Follow gateway logs only
+- `make logs-db` - Follow database logs only
+- `make health` - Check gateway health status
+
+### Testing Commands
+- `make test-mistralapi` - Test Mistral Large model integration (runs `scripts/test-mistral.py`)
+- `make models` - List registered models in the gateway
+
+### Configuration Commands
+- `make setup` - Create `.env` file from `.env.example` template
+- `make help` - Display all available commands
+
+### Testing Script
+**scripts/test-mistral.py** provides comprehensive Mistral API testing:
+- Tests `/chat/completions` endpoint
+- Validates Bearer token authentication
+- Reports token usage and cost
+- Handles errors gracefully (HTTP errors, connection failures, timeouts)
 
 ## API Endpoints
 

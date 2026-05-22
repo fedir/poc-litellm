@@ -25,14 +25,21 @@ Project-specific instructions for Claude Code when working on this repository.
 ### Launch
 ```bash
 cd /var/home/fedir/Lab/ai-gateway
-cp .env.example .env
-# Edit .env with your credentials
-podman compose up -d
+make setup              # Create .env from template
+nano .env               # Edit with your credentials
+make start              # Start services
 ```
 
 Access:
 - 🔌 **API**: http://localhost:8000
 - 🎛️ **Admin**: http://localhost:8000/ui (see .env for credentials)
+
+### Test
+```bash
+make test-mistralapi    # Test Mistral Large model
+make health             # Check gateway health
+make models             # List registered models
+```
 
 ## Architecture
 
@@ -60,9 +67,12 @@ Access:
 
 ## Key Files
 
+- `Makefile` - Deployment, testing, and utility commands
 - `docker-compose.yml` - Container orchestration
+- `scripts/test-mistral.py` - Mistral API testing script
+- `.env` - Environment variables (git-ignored)
+- `.env.example` - Environment template
 - `config.yaml` - Model configuration (optional)
-- `.env` - Environment variables
 - `requirements.txt` - Python dependencies (for local development)
 
 ## Configuration
@@ -113,26 +123,81 @@ Or configure via admin dashboard at http://localhost:8000/ui
 
 ## Common Tasks
 
-### View Logs
+### Using Makefile (Recommended)
 ```bash
+make start              # Start services
+make stop               # Stop services
+make restart            # Restart services
+make logs               # Follow all logs
+make logs-gateway       # Gateway logs only
+make logs-db            # Database logs only
+make health             # Health check
+make models             # List models
+make test-mistralapi    # Test API
+make clean              # Full reset
+make help               # Show all commands
+```
+
+### Using Podman Directly
+```bash
+# View Logs
 podman logs litellm-gateway -f
 podman logs litellm-db -f
-```
 
-### Stop Gateway
-```bash
+# Stop Gateway
 podman compose down
-```
 
-### Restart with Fresh Database
-```bash
+# Restart with Fresh Database
 podman compose down -v
 podman compose up -d
+
+# Access PostgreSQL CLI
+podman exec -it litellm-db psql -U litellm -d litellm
 ```
 
-### Access PostgreSQL CLI
-```bash
-podman exec -it litellm-db psql -U litellm -d litellm
+## Makefile & Testing
+
+### Makefile Targets
+The project includes a **Makefile** with all deployment and testing commands:
+
+**Deployment:**
+- `make start` - Start gateway and database
+- `make stop` - Stop all services
+- `make restart` - Restart services
+- `make clean` - Remove containers and volumes
+
+**Monitoring:**
+- `make status` - Show container status
+- `make logs` - Follow all logs
+- `make logs-gateway` / `make logs-db` - Component-specific logs
+- `make health` - Health check
+- `make models` - List registered models
+
+**Testing:**
+- `make test-mistralapi` - Run comprehensive Mistral API test
+
+**Configuration:**
+- `make setup` - Create .env from template
+- `make help` - Display all commands
+
+### Testing Script (scripts/test-mistral.py)
+Comprehensive test for Mistral Large model:
+- Tests `/chat/completions` endpoint
+- Validates Bearer token authentication
+- Reports token usage and spend
+- Handles errors gracefully:
+  - HTTP errors (401, 500, etc.)
+  - Connection failures
+  - Timeout handling
+
+Example output:
+```
+✅ Mistral Large Model Test Successful
+
+Response:
+  Hello! I'm an AI here to help...
+
+Tokens used: 52
 ```
 
 ## API Usage
