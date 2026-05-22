@@ -1,15 +1,19 @@
 # Claude Code Instructions for ai-gateway
 
-This document contains project-specific instructions for Claude Code when working on this repository.
+Project-specific instructions for Claude Code when working on this repository.
 
 ## Project Overview
 
-**ai-gateway** is a local LiteLLM proxy server for testing and managing Mistral AI API access with a web admin dashboard.
+**ai-gateway** is a production-ready LiteLLM proxy server for Mistral AI with web-based management, PostgreSQL persistence, and OpenAI-compatible REST API.
 
-**Status:** ✅ Production Ready
-- Running on Docker Compose
-- PostgreSQL database for authentication
-- Admin dashboard accessible at http://localhost:8000/ui
+**Status:** ✅ OPERATIONAL
+- ✅ Docker Compose deployment running
+- ✅ PostgreSQL database with model storage
+- ✅ Mistral Large model tested & working
+- ✅ Admin dashboard at http://localhost:8000/ui
+- ✅ REST API with model registration
+
+**Latest Test:** Mistral Large model successfully responding to chat completions
 
 ## Quick Start
 
@@ -65,29 +69,47 @@ Access:
 
 ### Environment Variables
 
-Store all sensitive data in `.env` file (gitignored). See `.env.example` for template:
+Store all sensitive data in `.env` file (gitignored). Key variables:
 
-- `MISTRAL_API_KEY` - Mistral AI API credentials
-- `LITELLM_MASTER_KEY` - Master authentication key
-- `UI_USERNAME` - Admin dashboard username
-- `UI_PASSWORD` - Admin dashboard password (change from default)
-- `POSTGRES_USER` - Database username
-- `POSTGRES_PASSWORD` - Database password (change from default)
-- `DATABASE_URL` - PostgreSQL connection string
+```env
+MISTRAL_API_KEY=your-mistral-api-key
+LITELLM_MASTER_KEY=your-secure-master-key
+UI_USERNAME=admin
+UI_PASSWORD=your-password
+POSTGRES_USER=litellm
+POSTGRES_PASSWORD=your-password
+POSTGRES_DB=litellm
+DATABASE_URL=postgresql://litellm:your-password@postgres:5432/litellm
+STORE_MODEL_IN_DB=True  # Enable dynamic model registration
+```
+
+**Important:**
+- `STORE_MODEL_IN_DB=True` - Allows registering models via API
+- All credentials must be strong for production
+- Mistral API key from https://console.mistral.ai
 
 ⚠️ **Never commit .env** - it's in .gitignore
 
-### Modify Models
+### Mistral Model Integration
 
-Edit the LiteLLM config via admin dashboard or mount a config.yaml:
+Models are dynamically registered in the database. Register via API:
 
-```yaml
-model_list:
-  - model_name: mistral-large
-    litellm_params:
-      model: mistral/mistral-large-latest
-      api_key: ${MISTRAL_API_KEY}
+```bash
+curl -X POST http://localhost:8000/model/new \
+  -H "Authorization: Bearer your-secure-master-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model_name": "mistral-large",
+    "litellm_params": {
+      "model": "mistral/mistral-large-latest",
+      "api_key": "your-mistral-api-key"
+    }
+  }'
 ```
+
+**Status:** ✅ mistral-large model tested and working
+
+Or configure via admin dashboard at http://localhost:8000/ui
 
 ## Common Tasks
 
@@ -120,14 +142,32 @@ podman exec -it litellm-db psql -U litellm -d litellm
 curl http://localhost:8000/models
 ```
 
-### Chat Completion
+### Chat Completion (Mistral)
 ```bash
 curl -X POST http://localhost:8000/chat/completions \
+  -H "Authorization: Bearer your-secure-master-key-here" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "mistral-large",
-    "messages": [{"role": "user", "content": "Hello!"}]
+    "messages": [{"role": "user", "content": "Hello!"}],
+    "max_tokens": 100,
+    "temperature": 0.7
   }'
+```
+
+**Response:**
+```json
+{
+  "choices": [{
+    "message": {
+      "role": "assistant",
+      "content": "Your response here..."
+    }
+  }],
+  "usage": {
+    "total_tokens": 25
+  }
+}
 ```
 
 ### Health Check

@@ -1,15 +1,20 @@
 # LiteLLM AI Gateway - Mistral AI Proxy
 
-A local LiteLLM proxy server for testing and managing Mistral AI API access with a web-based admin dashboard.
+A production-ready local LiteLLM proxy server for Mistral AI with a web-based admin dashboard, PostgreSQL backend, and OpenAI-compatible REST API.
+
+## Status: ✅ OPERATIONAL
+
+Mistral Large model fully integrated and tested. Gateway running with persistent model storage.
 
 ## Features
 
+✅ **Mistral AI Integration** - mistral-large-latest model configured & tested  
 ✅ **LiteLLM Proxy** - Unified API interface for multiple LLMs  
 ✅ **Admin Dashboard** - Web UI for model management and monitoring  
-✅ **PostgreSQL** - Database for authentication and audit logs  
+✅ **PostgreSQL** - Database for authentication, models, and audit logs  
 ✅ **Docker Compose** - Simple containerized deployment  
-✅ **Mistral AI Integration** - Pre-configured for Mistral models  
 ✅ **REST API** - OpenAI-compatible chat completions endpoint  
+✅ **Model Registration** - Dynamic model management via API  
 
 ## Quick Start
 
@@ -49,6 +54,49 @@ podman compose up -d
 | **API Docs** | http://localhost:8000/redoc | - |
 | **Database** | localhost:5432 | (see .env) |
 
+## Mistral AI Integration
+
+The gateway comes pre-configured with **Mistral Large** model. After setting your API key in `.env` and starting the services:
+
+### Register a Model
+```bash
+curl -X POST http://localhost:8000/model/new \
+  -H "Authorization: Bearer your-secure-master-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model_name": "mistral-large",
+    "litellm_params": {
+      "model": "mistral/mistral-large-latest",
+      "api_key": "your-mistral-api-key"
+    }
+  }'
+```
+
+### Test the Model
+```python
+import urllib.request
+import json
+
+payload = json.dumps({
+    "model": "mistral-large",
+    "messages": [{"role": "user", "content": "Hello!"}],
+    "max_tokens": 100
+}).encode()
+
+req = urllib.request.Request(
+    'http://localhost:8000/chat/completions',
+    data=payload,
+    headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer your-secure-master-key-here'
+    }
+)
+
+with urllib.request.urlopen(req) as r:
+    response = json.loads(r.read())
+    print(response['choices'][0]['message']['content'])
+```
+
 ## Usage
 
 ### Web Admin Dashboard
@@ -61,6 +109,7 @@ podman compose up -d
 
 ```bash
 curl -X POST http://localhost:8000/chat/completions \
+  -H "Authorization: Bearer your-secure-master-key-here" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "mistral-large",
@@ -69,8 +118,27 @@ curl -X POST http://localhost:8000/chat/completions \
         "role": "user",
         "content": "Hello, how are you?"
       }
-    ]
+    ],
+    "max_tokens": 100,
+    "temperature": 0.7
   }'
+```
+
+**Response:**
+```json
+{
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "I'm doing well, thank you for asking! How can I help you today?"
+      }
+    }
+  ],
+  "usage": {
+    "total_tokens": 25
+  }
+}
 ```
 
 ### Check Health
@@ -100,8 +168,15 @@ UI_USERNAME=admin
 UI_PASSWORD=strong-password
 POSTGRES_USER=litellm
 POSTGRES_PASSWORD=strong-password
+POSTGRES_DB=litellm
 DATABASE_URL=postgresql://litellm:strong-password@postgres:5432/litellm
+STORE_MODEL_IN_DB=True
 ```
+
+**Key Variables:**
+- `MISTRAL_API_KEY` - Get from https://console.mistral.ai
+- `LITELLM_MASTER_KEY` - For API authentication
+- `STORE_MODEL_IN_DB=True` - Enables dynamic model registration
 
 ⚠️ **Never commit .env to version control** - it's in .gitignore
 
