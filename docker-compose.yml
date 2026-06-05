@@ -29,8 +29,6 @@ services:
       - UI_PASSWORD=${UI_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
       - STORE_MODEL_IN_DB=True
-    volumes:
-      - ./config.yaml:/app/config.yaml:ro
     command: ["--port", "8000"]
     restart: unless-stopped
     depends_on:

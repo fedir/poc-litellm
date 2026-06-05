@@ -191,24 +191,10 @@ STORE_MODEL_IN_DB=True
 
 ### Model Configuration
 
-Models can be configured via:
+Models are stored in the database (enabled by `STORE_MODEL_IN_DB=True`). Configure via:
 1. **Admin Dashboard** - Web UI for easy management
-2. **config.yaml** - YAML file (optional)
-3. **API Endpoints** - Programmatic configuration
-
-Example config.yaml:
-```yaml
-model_list:
-  - model_name: mistral-large
-    litellm_params:
-      model: mistral/mistral-large-latest
-      api_key: ${MISTRAL_API_KEY}
-
-  - model_name: mistral-medium
-    litellm_params:
-      model: mistral/mistral-medium-latest
-      api_key: ${MISTRAL_API_KEY}
-```
+2. **API Endpoints** - Programmatic configuration (`/model/new`)
+3. **Database** - Models persist across restarts
 
 ## Docker Compose Services
 
@@ -362,10 +348,11 @@ podman exec litellm-db pg_isready -U litellm -d litellm
 4. Restart gateway: `podman compose restart litellm-gateway`
 
 ### Models Not Available
-1. Check config.yaml is valid YAML
-2. Verify Mistral API key is correct
-3. View logs for validation errors: `podman logs litellm-gateway`
-4. Ensure model names match Mistral's model IDs
+1. Register models via Admin Dashboard or API endpoint (`/model/new`)
+2. Verify Mistral API key is correct in `.env`
+3. Check database is running: `podman ps | grep litellm-db`
+4. View logs for errors: `podman logs litellm-gateway`
+5. Ensure model names match Mistral's model IDs (e.g., `mistral/mistral-large-latest`)
 
 ## Architecture
 
@@ -411,13 +398,13 @@ python gateway.py
 ```
 ai-gateway/
 ├── docker-compose.yml      # Container orchestration
-├── config.yaml             # Model configuration
-├── .env                    # Environment variables
+├── .env                    # Environment variables (git-ignored)
+├── Makefile               # Deployment and testing commands
+├── scripts/               # Helper scripts (test-mistral.py)
 ├── requirements.txt        # Python dependencies
 ├── CLAUDE.md              # Claude Code instructions
 ├── README.md              # This file
-├── Dockerfile             # Container image
-└── k8s-deployment.yaml    # Kubernetes manifests (optional)
+└── Dockerfile             # Container image
 ```
 
 ## References

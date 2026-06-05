@@ -72,7 +72,6 @@ make models             # List registered models
 - `scripts/test-mistral.py` - Mistral API testing script
 - `.env` - Environment variables (git-ignored)
 - `.env.example` - Environment template
-- `config.yaml` - Model configuration (optional)
 - `requirements.txt` - Python dependencies (for local development)
 
 ## Configuration
