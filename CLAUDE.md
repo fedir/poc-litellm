@@ -1,6 +1,8 @@
-# Claude Code Instructions for ai-gateway
+# Claude Code Instructions for poc-litellm
 
 Project-specific instructions for Claude Code when working on this repository.
+
+**GitHub Repository:** https://github.com/fedir/poc-litellm
 
 ## Project Overview
 
@@ -24,7 +26,7 @@ Project-specific instructions for Claude Code when working on this repository.
 
 ### Launch
 ```bash
-cd /var/home/fedir/Lab/ai-gateway
+cd poc-litellm          # Navigate to project directory
 make setup              # Create .env from template
 nano .env               # Edit with your credentials
 make start              # Start services

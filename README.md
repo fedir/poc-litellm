@@ -2,6 +2,8 @@
 
 A production-ready local LiteLLM proxy server for Mistral AI with a web-based admin dashboard, PostgreSQL backend, and OpenAI-compatible REST API.
 
+**Repository:** https://github.com/fedir/poc-litellm
+
 ## Status: ✅ OPERATIONAL
 
 Mistral Large model fully integrated and tested. Gateway running with persistent model storage.
@@ -28,7 +30,7 @@ Mistral Large model fully integrated and tested. Gateway running with persistent
 
 ```bash
 # Navigate to project directory
-cd ai-gateway
+cd poc-litellm
 
 # Create .env file from template
 make setup
