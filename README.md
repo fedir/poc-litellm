@@ -28,7 +28,7 @@ Mistral Large model fully integrated and tested. Gateway running with persistent
 
 ```bash
 # Navigate to project directory
-cd /var/home/fedir/Lab/ai-gateway
+cd ai-gateway
 
 # Create .env file from template
 make setup
