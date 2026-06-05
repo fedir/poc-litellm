@@ -8,7 +8,7 @@ MASTER_KEY = os.environ.get('LITELLM_MASTER_KEY', 'your-secure-master-key-here')
 API_URL = 'http://localhost:8000/chat/completions'
 
 payload = json.dumps({
-    "model": "mistral-large",
+    "model": "mistral/mistral-large-latest",
     "messages": [
         {"role": "user", "content": "Hello! Say something brief about yourself."}
     ],
