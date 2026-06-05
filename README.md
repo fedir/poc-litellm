@@ -80,7 +80,8 @@ curl -X POST http://localhost:8000/model/new \
 make test-mistralapi
 
 # Test with custom prompt
-make test-mistral MESSAGE="What is 2+2?"
+make test-mistral What is 2+2?
+make test-mistral hello world
 ```
 
 Both run `scripts/test-mistral.py` which tests the Mistral Large model integration with error handling.
@@ -289,7 +290,7 @@ The project includes a **Makefile** for simplified deployment and testing:
 
 ### Testing Commands
 - `make test-mistralapi` - Test Mistral Large model with default message
-- `make test-mistral MESSAGE="..."` - Test with custom prompt
+- `make test-mistral <message>` - Test with custom prompt (words separated by spaces)
 - `make models` - List registered models in the gateway
 
 ### Configuration Commands

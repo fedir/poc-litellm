@@ -18,8 +18,8 @@ help:
 	@echo ""
 	@echo "Testing:"
 	@echo "  make test-mistralapi    - Test Mistral Large model (default message)"
-	@echo "  make test-mistral       - Test Mistral with custom message"
-	@echo "                            Usage: make test-mistral MESSAGE=\"Your prompt here\""
+	@echo "  make test-mistral <msg> - Test Mistral with custom message"
+	@echo "                            Usage: make test-mistral hello world"
 	@echo "  make models             - List registered models"
 	@echo ""
 	@echo "Configuration:"
@@ -85,7 +85,7 @@ test-mistralapi:
 test-mistral:
 	@echo "🧪 Testing Mistral Large Model"
 	@echo ""
-	python3 scripts/test-mistral.py $(MESSAGE)
+	python3 scripts/test-mistral.py $(filter-out $@,$(MAKECMDGOALS))
 
 setup:
 	@if [ -f .env ]; then \
@@ -98,5 +98,8 @@ setup:
 		echo "   • UI_PASSWORD"; \
 		echo "   • POSTGRES_PASSWORD"; \
 	fi
+
+%:
+	@:
 
 .DEFAULT_GOAL := help
