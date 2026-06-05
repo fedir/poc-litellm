@@ -437,6 +437,6 @@ For issues and questions:
 
 ---
 
-**Last Updated**: May 22, 2026  
+**Last Updated**: June 5, 2026  
 **Status**: ✅ Working  
 **Gateway Version**: LiteLLM main-stable
