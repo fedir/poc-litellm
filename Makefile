@@ -1,4 +1,4 @@
-.PHONY: help start stop restart logs logs-gateway logs-db clean test-mistralapi status health models setup
+.PHONY: help start stop restart logs logs-gateway logs-db clean test-mistralapi test-mistral status health models setup
 
 help:
 	@echo "LiteLLM AI Gateway - Available Commands"
@@ -17,7 +17,9 @@ help:
 	@echo "  make health             - Check gateway health"
 	@echo ""
 	@echo "Testing:"
-	@echo "  make test-mistralapi    - Test Mistral Large model"
+	@echo "  make test-mistralapi    - Test Mistral Large model (default message)"
+	@echo "  make test-mistral       - Test Mistral with custom message"
+	@echo "                            Usage: make test-mistral MESSAGE=\"Your prompt here\""
 	@echo "  make models             - List registered models"
 	@echo ""
 	@echo "Configuration:"
@@ -79,6 +81,11 @@ test-mistralapi:
 	@echo "🧪 Testing Mistral Large Model"
 	@echo ""
 	python3 scripts/test-mistral.py
+
+test-mistral:
+	@echo "🧪 Testing Mistral Large Model"
+	@echo ""
+	python3 scripts/test-mistral.py $(MESSAGE)
 
 setup:
 	@if [ -f .env ]; then \

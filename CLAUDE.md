@@ -269,6 +269,21 @@ podman exec litellm-db pg_isready -U litellm -d litellm
 - All requests are proxied to Mistral AI API
 - Logs are stored in PostgreSQL for audit trail
 
+## Commit Guidelines
+
+Keep commit messages concise and clean:
+- Use conventional commit format: `type: subject`
+- No co-authored-by lines or footer elements
+- Write clear, imperative subject lines
+- Include body only when needed for context
+
+Examples:
+```
+fix: Remove unnecessary config.yaml volume mount
+feat: Add custom message support to Mistral test
+chore: Remove obsolete version attribute from docker-compose.yml
+```
+
 ## Security Considerations
 
 - Change default UI credentials in production

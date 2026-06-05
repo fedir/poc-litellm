@@ -7,10 +7,16 @@ import os
 MASTER_KEY = os.environ.get('LITELLM_MASTER_KEY', 'your-secure-master-key-here')
 API_URL = 'http://localhost:8000/chat/completions'
 
+# Get message from command line or use default
+if len(sys.argv) > 1:
+    message = ' '.join(sys.argv[1:])
+else:
+    message = "Hello! Say something brief about yourself."
+
 payload = json.dumps({
     "model": "mistral/mistral-large-latest",
     "messages": [
-        {"role": "user", "content": "Hello! Say something brief about yourself."}
+        {"role": "user", "content": message}
     ],
     "max_tokens": 100,
     "temperature": 0.7
