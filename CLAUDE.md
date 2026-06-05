@@ -36,9 +36,10 @@ Access:
 
 ### Test
 ```bash
-make test-mistralapi    # Test Mistral Large model
-make health             # Check gateway health
-make models             # List registered models
+make test-mistralapi              # Test with default message
+make test-mistral MESSAGE="..."   # Test with custom prompt
+make health                       # Check gateway health
+make models                       # List registered models
 ```
 
 ## Architecture

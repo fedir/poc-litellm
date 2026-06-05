@@ -76,10 +76,14 @@ curl -X POST http://localhost:8000/model/new \
 
 **Using Makefile (Recommended):**
 ```bash
+# Test with default message
 make test-mistralapi
+
+# Test with custom prompt
+make test-mistral MESSAGE="What is 2+2?"
 ```
 
-This runs `scripts/test-mistral.py` which tests the Mistral Large model integration with error handling.
+Both run `scripts/test-mistral.py` which tests the Mistral Large model integration with error handling.
 
 **Manual API Test:**
 ```python
@@ -284,7 +288,8 @@ The project includes a **Makefile** for simplified deployment and testing:
 - `make health` - Check gateway health status
 
 ### Testing Commands
-- `make test-mistralapi` - Test Mistral Large model integration (runs `scripts/test-mistral.py`)
+- `make test-mistralapi` - Test Mistral Large model with default message
+- `make test-mistral MESSAGE="..."` - Test with custom prompt
 - `make models` - List registered models in the gateway
 
 ### Configuration Commands
